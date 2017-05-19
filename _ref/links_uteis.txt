@@ -1,0 +1,19 @@
+Audio HTML 5
+http://www.botecodigital.info/web/controlando-o-elemento-audio-do-html5-com-javascript/
+
+Posição CSS em porcentagem com jQuery
+http://stackoverflow.com/questions/5230425/getting-percent-css-position-with-jquery
+http://stackoverflow.com/questions/744319/get-css-rules-percentage-value-in-jquery
+
+Gerar números inteiros aleatórios com JavaScript
+http://www.devfuria.com.br/javascript/numeros-aleatorios/
+
+Background com imagem transparente em CSS
+https://css-tricks.com/snippets/css/transparent-background-images/
+
+Formular para alinar um terceiro elemento com base nos outros 2
+x = xi + (P * (xf - xi))
+y = yi + (P * (yf - yi))
+P = distancia
+Pi = 0
+Pf = 1
