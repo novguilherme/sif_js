@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script src="jquery-1.6.4.js"></script>
+</head>
+
+<body>
+<audio id="audio" autoplay="autoplay">
+    <source src="song/00001/Bokura_no_LIVE_Kimi_to_no_LIFE.mp3" type="audio/mpeg">
+    <!--Seu navegador não possui suporte ao elemento audio -->
+</audio>
+<progress id="barra_progresso" max="0" value="0"></progress>
+<div>
+    <a href="#" onclick="play()">Play</a>
+    <a href="#" onclick="pause()">Pause</a>
+    <a href="#" onclick="stop()">Stop</a>
+</div>
+<span id="tempo_atual">00:00:00.00</span> /
+<span id="tempo_total">00:00:00.00</span>
+ 
+<script>
+    audio = document.getElementById('audio');
+     
+    audio.addEventListener('play', play_evento , false);
+    audio.addEventListener('timeupdate', atualizar , false);
+ 
+    function play(){
+        audio.play();
+    }
+ 
+    function pause(){
+        audio.pause();
+    }
+ 
+    function stop(){
+        audio.pause();
+        audio.currentTime = 0;
+    }
+ 
+    function play_evento(){
+        document.getElementById('tempo_atual').innerHTML = strToTime( audio.currentTime) ;
+        document.getElementById('tempo_total').innerHTML = strToTime( audio.duration );
+ 
+        document.getElementById('barra_progresso').max = audio.duration;
+        document.getElementById('barra_progresso').value = audio.currentTime;
+    }
+		
+    function atualizar(){
+        document.getElementById('tempo_atual').innerHTML = strToTime( audio.currentTime);
+        document.getElementById('barra_progresso').value = audio.currentTime;
+				
+				/*if(audio.currentTime > timeToStr('00:00:05.00') && pausetime == false) {
+					pausetime = true;
+					pause()
+				}*/
+				//document.getElementById('tempo_atual').innerHTML = timeToStr('00:05:23.21');
+    }
+ 
+    function strToTime( str_num ) {
+        var horas   = Math.floor(str_num / 3600);
+        var minutos = Math.floor((str_num - (horas * 3600)) / 60);
+        var segundos = (str_num - (horas * 3600) - (minutos * 60)).toFixed(2);
+         
+        if (horas   < 10)  horas    = "0"+horas;
+        if (minutos < 10)  minutos  = "0"+minutos;
+        if (segundos < 10) segundos = "0"+segundos;
+         
+        var tempo    = horas+':'+minutos+':'+segundos;
+         
+        return tempo;
+    }
+		
+		function timeToStr( time_num ) {
+			var time_num = time_num.split(':');
+			var totalArrayTempo = time_num.length;
+			var tempo = 0;
+			var multiplicadorTempo = 1;
+			
+			for(posicaoArrayTempo = totalArrayTempo-1; posicaoArrayTempo >= 0; posicaoArrayTempo--) {
+				var tempo = tempo + (Number(time_num[posicaoArrayTempo]) * multiplicadorTempo);
+				multiplicadorTempo = multiplicadorTempo * 60;
+			}
+			
+			return tempo;
+		}
+</script>
+</body>
+</html>

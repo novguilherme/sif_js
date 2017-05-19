@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script src="jquery-1.6.4.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>SIJS</title>
+<style>
+body, html {
+	background:url("img/stage/08.png") no-repeat fixed center center / cover;
+	height:100%;
+	padding:0;
+	margin:0;
+	overflow:hidden;
+}
+
+.tela {
+	padding-bottom:66.666%;
+	/*background:#900;*/
+	position:relative;
+	margin:auto;
+}
+
+.tela.largura {
+	padding-bottom:0;
+	height:100%;
+	margin:auto;
+}
+
+.tela > div {
+	position:absolute;
+	width:100%;
+	height:100%;
+	/*background:rgba(255,255,255,0.3);*/
+	top:0;
+	left:0;
+}
+
+input {
+	box-sizing:border-box;
+	border:0;
+	background:none;
+	color:#FFF;
+}
+
+
+/* Live screen - Start */
+.live_btn {
+	/*background:;*/
+	background:no-repeat scroll center center / cover;
+	position:absolute;
+	height:20%;
+	width:13.4%;
+	border-radius:50%;
+	overflow:hidden;
+}
+
+.live_btn.ativo::after {
+	/*background-color:rgba(0, 0, 204, 0.5);*/
+	content: "";
+  background-color:rgba(0, 0, 204, 0.2);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute; 
+}
+
+#live_btn1 {
+	top:15.0%;
+	left:1.6%;
+	background-image:url("img/chara/01.png");
+}
+
+#live_btn2 {
+	top:38.9%;
+	left:4.75%;
+	background-image:url("img/chara/02.png");
+}
+
+#live_btn3 {
+	top:59.0%;
+	left:13.8%;
+	background-image:url("img/chara/03.png");
+}
+
+#live_btn4 {
+	top:72.6%;
+	left:27.3%;
+	background-image:url("img/chara/04.png");
+}
+
+#live_btn5 {
+	top:77.5%;
+	left:43.3%;
+	background-image:url("img/chara/05.png");
+}
+
+#live_btn6 {
+	top:72.6%;
+	right:27.3%;
+	background-image:url("img/chara/06.png");
+}
+
+#live_btn7 {
+	top:59.0%;
+	right:13.8%;
+	background-image:url("img/chara/07.png");
+}
+
+#live_btn8 {
+	top: 38.9%;
+	right: 4.75%;
+	background-image:url("img/chara/08.png");
+}
+
+#live_btn9 {
+	top:15.0%;
+	right:1.6%;
+	background-image:url("img/chara/09.png");
+}
+
+.live_note {
+	background:url("img/interface_live/note3.png") no-repeat scroll center center / cover;
+	position:absolute;
+	width:13.4%;
+	height:20%;
+	top:15.0%;
+	left:43.3%;
+	opacity:0;
+	border-radius:50%;
+}
+
+.live_note::after {
+	/*background-color:rgba(0, 0, 204, 0.5);*/
+	content: "";
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute; 
+}
+/* Live screen - End */
+</style>
+</head>
+
+<body>
+<div class="tela">
+ <div>
+ 	<progress id="barra_progresso" max="0" value="0" style="width:100%; height:1.2%"></progress>
+	<input class="musicTimeStr" type="text" />
+	<input class="musicTime" type="text" />
+	
+	<audio id="audio">
+		<source src="song/00001/Bokura_no_LIVE_Kimi_to_no_LIFE.mp3" type="audio/mpeg">
+		<!--Seu navegador não possui suporte ao elemento audio -->
+	</audio>
+	
+	<!-- Buttons - Start -->
+	<!-- 1 -->
+	<div class="live_btn" id="live_btn1"></div>
+	<!-- 2 -->
+	<div class="live_btn" id="live_btn2"></div>
+	<!-- 3 -->
+	<div class="live_btn" id="live_btn3"></div>
+	<!-- 4 -->
+	<div class="live_btn" id="live_btn4"></div>
+	<!-- 5 -->
+	<div class="live_btn" id="live_btn5"></div>
+	<!-- 6 -->
+	<div class="live_btn" id="live_btn6"></div>
+	<!-- 7 -->
+	<div class="live_btn" id="live_btn7"></div>
+	<!-- 8 -->
+	<div class="live_btn" id="live_btn8"></div>
+	<!-- 9 -->
+	<div class="live_btn" id="live_btn9"></div>
+	<!-- Buttons - End -->
+	
+	<!-- Center -->
+	<!--<div style="background: rgba(0, 204, 0, 0.5) none repeat scroll 0% 0%; position: absolute; top: 15.0%; height: 20%; left: 43.3%; width: 13.4%;"></div>
+	<div style="background: rgba(0, 204, 0, 0.5) none repeat scroll 0% 0%; position: absolute; top: 15.7%; height: 18.6%; left: 43.8%; width: 12.4%;"></div> -->
+	<div class="live_note_area">
+		<!--<div class="live_note"></div> -->
+	</div>
+ </div>
+</div>
+<script>
+
+
+/* Ajustar tela - Inicio */
+function divSize() {
+	$(".tela").removeClass("largura").removeAttr("style");
+	
+	var base = $(".tela").innerWidth();
+	var altura = $(".tela").innerHeight();
+	
+	if(altura > $(window).height()){
+		$(".tela").addClass("largura");
+		var altura = $(window).height();
+		var base = altura / 2 * 3;
+		$(".tela").width(base);
+		
+		
+		//$("input").eq(0).val(base);
+		//$("input").eq(1).val(altura);
+	}
+	
+	else {
+		//$("input").eq(0).val(base);
+		//$("input").eq(1).val(altura);
+	}
+}
+
+divSize();
+
+$(window).resize(function() {
+	divSize();
+});
+/*Ajustar Tela - Fim */
+
+/*Ativar Botoes - Inicio */
+$(document).keydown(function(e){
+	if(String.fromCharCode(e.which) == "a" | String.fromCharCode(e.which) == "1") $("#live_btn1").addClass("ativo");//1
+	if(String.fromCharCode(e.which) == "b" | String.fromCharCode(e.which) == "2") $("#live_btn2").addClass("ativo");//2
+	if(String.fromCharCode(e.which) == "c" | String.fromCharCode(e.which) == "3") $("#live_btn3").addClass("ativo");//3
+	if(String.fromCharCode(e.which) == "d" | String.fromCharCode(e.which) == "4") $("#live_btn4").addClass("ativo");//4
+	if(String.fromCharCode(e.which) == "e" | String.fromCharCode(e.which) == "5") $("#live_btn5").addClass("ativo");//5
+	if(String.fromCharCode(e.which) == "f" | String.fromCharCode(e.which) == "6") $("#live_btn6").addClass("ativo");//6
+	if(String.fromCharCode(e.which) == "g" | String.fromCharCode(e.which) == "7") $("#live_btn7").addClass("ativo");//7
+	if(String.fromCharCode(e.which) == "h" | String.fromCharCode(e.which) == "8") $("#live_btn8").addClass("ativo");//8
+	if(String.fromCharCode(e.which) == "i" | String.fromCharCode(e.which) == "9") $("#live_btn9").addClass("ativo");//9
+	
+	/*bg = $(".live_note").css("backgroundColor").match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+	function hex(x) {
+		return ("0" + parseInt(x).toString(16)).slice(-2);
+	}
+	bg = hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
+	//alert(bg);
+	if(bg == "0000ff") {
+		$("body").attr("data-ponto","1");
+	}
+	else if(bg == "00ffff") {
+		$("body").attr("data-ponto","2");
+	}
+	else {
+		$("body").attr("data-ponto","0");
+	}*/
+	
+	if($(".live_note").eq(0).css("backgroundColor") == "rgba(0, 0, 255, 0.5)") {
+		$("body").attr("data-ponto","1");
+	}
+	else if($(".live_note").eq(0).css("backgroundColor") == "rgba(0, 255, 255, 0.5)") {
+		$("body").attr("data-ponto","2");
+	}
+	else {
+		$("body").attr("data-ponto","0");
+	}
+});
+
+$(document).keyup(function(e){
+	//alert(e.which + ": " + String.fromCharCode(e.which));
+	if(String.fromCharCode(e.which) == "a" | String.fromCharCode(e.which) == "1") $("#live_btn1").removeClass("ativo");//1
+	if(String.fromCharCode(e.which) == "b" | String.fromCharCode(e.which) == "2") $("#live_btn2").removeClass("ativo");//2
+	if(String.fromCharCode(e.which) == "c" | String.fromCharCode(e.which) == "3") $("#live_btn3").removeClass("ativo");//3
+	if(String.fromCharCode(e.which) == "d" | String.fromCharCode(e.which) == "4") $("#live_btn4").removeClass("ativo");//4
+	if(String.fromCharCode(e.which) == "e" | String.fromCharCode(e.which) == "5") $("#live_btn5").removeClass("ativo");//5
+	if(String.fromCharCode(e.which) == "f" | String.fromCharCode(e.which) == "6") $("#live_btn6").removeClass("ativo");//6
+	if(String.fromCharCode(e.which) == "g" | String.fromCharCode(e.which) == "7") $("#live_btn7").removeClass("ativo");//7
+	if(String.fromCharCode(e.which) == "h" | String.fromCharCode(e.which) == "8") $("#live_btn8").removeClass("ativo");//8
+	if(String.fromCharCode(e.which) == "i" | String.fromCharCode(e.which) == "9") $("#live_btn9").removeClass("ativo");//9
+});
+/*Ativar Botoes - Fim */
+
+
+/* Ativar Música - Inicio */
+audio = document.getElementById('audio');
+     
+audio.addEventListener('play', play_evento , false);
+audio.addEventListener('pause', pause_evento , false);
+audio.addEventListener('timeupdate', atualizar , false);
+
+function play_evento(){
+	$('#barra_progresso').attr("max", audio.duration);
+	audio.status = "play";
+	goNote();
+}
+
+function pause_evento(){
+	audio.status = "pause";
+}
+
+function atualizar(){
+	$('#barra_progresso').attr("value", audio.currentTime);
+	$('.musicTimeStr').attr("value", audio.currentTime);
+	$('.musicTime').attr("value", strToTime(audio.currentTime));
+}
+
+$('#barra_progresso').click(function(e) {
+	if(audio.status == "play") {
+		audio.pause();
+	}
+	
+	else {
+		audio.play();
+	}
+});
+/* Ativar Música - Fim */
+
+/* Converter string do tempo da música em relógio - Inicio */
+function strToTime( str_num ) {
+	var horas   = Math.floor(str_num / 3600);
+	var minutos = Math.floor((str_num - (horas * 3600)) / 60);
+	var segundos = (str_num - (horas * 3600) - (minutos * 60)).toFixed(2);
+	
+	if (horas   < 10)  horas    = "0"+horas;
+	if (minutos < 10)  minutos  = "0"+minutos;
+	if (segundos < 10) segundos = "0"+segundos;
+	
+	var tempo    = horas+':'+minutos+':'+segundos;
+	
+	return tempo;
+}
+/* Converter string do tempo da música em relógio - Fim */
+
+/* Converter tempo de música em string - Inicio */
+function timeToStr( time_num ) {
+	var time_num = time_num.split(':');
+	var totalArrayTempo = time_num.length;
+	var tempo = 0;
+	var multiplicadorTempo = 1;
+	
+	for(posicaoArrayTempo = totalArrayTempo-1; posicaoArrayTempo >= 0; posicaoArrayTempo--) {
+		var tempo = tempo + (Number(time_num[posicaoArrayTempo]) * multiplicadorTempo);
+		multiplicadorTempo = multiplicadorTempo * 60;
+	}
+	
+	return tempo;
+}
+/* Converter tempo de música em string - Fim */
+
+/* Teste notas - Inicio *
+var tstnotas = [];
+
+tstnotas.push({
+	tst: "aaa"
+})
+
+tstnotas.push({
+	tst: "bbb"
+})
+
+alert(tstnotas[0].tst);
+tstnotas.shift(); 
+alert(tstnotas[0].tst);
+/* Teste notas - Fim */
+
+/* Função para adicionar notas para musica - Inicio */
+var musicNote = [];
+function addMusicNote(note) {
+	//Realizar a função apenas se definirem o tempo da música - Inicio
+	if(note.time !== undefined || note.time || note.timeStr !== undefined || note.time) {
+		//Define o tempo em string, caso não tenha definido desta forma
+		if(note.timeStr === undefined || !note.timeStr) note.timeStr = timeToStr(note.time);
+		
+		//Seleciona botao aleatorio caso não tenha definido nenhum
+		if(parseInt(note.btn,10) <= 0 || parseInt(note.btn,10) > 9 || isNaN(parseInt(note.btn)) ) {
+			note.btn = Math.floor(Math.random() * 9 + 1);
+		}
+		
+		//Guardar dados na variavel "musicNote"
+		musicNote.push({
+			id: musicNote.length,
+			timeStr: note.timeStr,
+			btn: note.btn,
+			start: false
+		})
+	}
+	//Realizar a função apenas se definirem o tempo da música - Fim
+}
+
+addMusicNote({
+	btn:"5",
+	time:"02"
+});
+
+//alert(musicNote[0].id);
+/* Função para adicionar notas para musica - Fim */
+
+/* Teste de Animacao - Inicio *
+function goNote() {
+	if(audio.status == "play") {
+		window.setTimeout('$(".live_note").css("backgroundColor","rgba(0,0,255,0.5)")', 925);
+		window.setTimeout('$(".live_note").css("backgroundColor","rgba(0,255,255,0.5)")', 1061);
+		window.setTimeout('$(".live_note").css("backgroundColor","rgba(0,0,255,0.5)")', 1405);
+		//window.setTimeout('stopNote()', 925);
+		//window.setTimeout('stopNote()', 1061);
+		//window.setTimeout('stopNote()', 1405);
+		//window.setTimeout('stopNote()', 1218);
+		
+		$(".live_note").animate({
+			opacity: "1",
+		},{queue: false, duration: 1000});
+		
+		centroTop = $(".live_note").position().top / $(".live_note").parent().height() * 100;
+		centroLeft = $(".live_note").position().left / $(".live_note").parent().width() * 100; 
+		elemento = "#live_btn"+Math.floor(Math.random() * 9 + 1);
+		//elemento = "#live_btn4";
+		elementoTop = $(elemento).position().top / $(elemento).parent().height() * 100;
+		elementoLeft = $(elemento).position().left / $(elemento).parent().width() * 100; 
+		distancia = 1.32;
+		
+		notaTopFinal = (centroTop + (distancia * (elementoTop - centroTop)))+"%";
+		notaLeftFinal = (centroLeft + (distancia * (elementoLeft - centroLeft)))+"%";
+		
+		$(".live_note").animate({
+			top: notaTopFinal,
+			left: notaLeftFinal
+		},1800, function(){
+			$(".live_note").removeAttr("style");
+			goNote();
+		});
+	}
+}
+
+function stopNote(){
+	$(".live_note").stop(false,false);
+}
+/* Teste de Animacao - Fim */
+</script>
+</body>
+</html>
