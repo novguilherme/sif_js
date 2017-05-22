@@ -11,6 +11,14 @@ http://www.devfuria.com.br/javascript/numeros-aleatorios/
 Background com imagem transparente em CSS
 https://css-tricks.com/snippets/css/transparent-background-images/
 
+jQuery each
+http://api.jquery.com/jquery.each/
+
+Velocity.js
+http://velocityjs.org/
+
+Jquery animation: 1000 = 1seg
+
 Formular para alinar um terceiro elemento com base nos outros 2
 x = xi + (P * (xf - xi))
 y = yi + (P * (yf - yi))
