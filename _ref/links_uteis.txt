@@ -17,6 +17,9 @@ http://api.jquery.com/jquery.each/
 Velocity.js
 http://velocityjs.org/
 
+SIF audios
+http://llsif-audio.tumblr.com/
+
 Jquery animation: 1000 = 1seg
 
 Formular para alinar um terceiro elemento com base nos outros 2

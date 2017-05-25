@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <script src="jquery-1.6.4.js"></script>
+<script src="js/velocity.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>SIJS</title>
 <style>
@@ -155,10 +156,6 @@ input {
 		<!--Seu navegador não possui suporte ao elemento audio -->
 	</audio>
 	
-	<audio id="sfxNote">
-		<source src="sounds/note_good.mp3" type="audio/mpeg">
-	</audio>
-	
 	<!-- Buttons - Start -->
 	<!-- 1 -->
 	<div class="live_btn" id="live_btn1"></div>
@@ -203,6 +200,15 @@ function divSize() {
 		var altura = $(window).height();
 		var base = altura / 2 * 3;
 		$(".tela").width(base);
+		
+		
+		//$("input").eq(0).val(base);
+		//$("input").eq(1).val(altura);
+	}
+	
+	else {
+		//$("input").eq(0).val(base);
+		//$("input").eq(1).val(altura);
 	}
 }
 
@@ -213,17 +219,8 @@ $(window).resize(function() {
 });
 /*Ajustar Tela - Fim */
 
-/* Efeito sonoro das notas - Inicio */
-sfxNote = document.getElementById('sfxNote');
-function playNote() {
-	sfxNote.pause();
-  sfxNote.currentTime = 0;
-	sfxNote.play();
-}
-/* Efeito Sonoro das notas - Fim */
-
 /*Ativar Botoes - Inicio */
-$(document).keydown(function(e){	
+$(document).keydown(function(e){
 	if(String.fromCharCode(e.which) == "a" | String.fromCharCode(e.which) == "1") $("#live_btn1").addClass("ativo");//1
 	if(String.fromCharCode(e.which) == "b" | String.fromCharCode(e.which) == "2") $("#live_btn2").addClass("ativo");//2
 	if(String.fromCharCode(e.which) == "c" | String.fromCharCode(e.which) == "3") $("#live_btn3").addClass("ativo");//3
@@ -233,6 +230,22 @@ $(document).keydown(function(e){
 	if(String.fromCharCode(e.which) == "g" | String.fromCharCode(e.which) == "7") $("#live_btn7").addClass("ativo");//7
 	if(String.fromCharCode(e.which) == "h" | String.fromCharCode(e.which) == "8") $("#live_btn8").addClass("ativo");//8
 	if(String.fromCharCode(e.which) == "i" | String.fromCharCode(e.which) == "9") $("#live_btn9").addClass("ativo");//9
+	
+	/*bg = $(".live_note").css("backgroundColor").match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+	function hex(x) {
+		return ("0" + parseInt(x).toString(16)).slice(-2);
+	}
+	bg = hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
+	//alert(bg);
+	if(bg == "0000ff") {
+		$("body").attr("data-ponto","1");
+	}
+	else if(bg == "00ffff") {
+		$("body").attr("data-ponto","2");
+	}
+	else {
+		$("body").attr("data-ponto","0");
+	}*/
 	
 	if($(".live_note").eq(0).css("backgroundColor") == "rgba(0, 0, 255, 0.5)") {
 		$("body").attr("data-ponto","1");
@@ -367,6 +380,26 @@ function addMusicNote(note) {
 	}
 	//Realizar a função apenas se definirem o tempo da música - Fim
 }
+
+addMusicNote({
+	btn:"5",
+	time:"0"
+});
+
+/*addMusicNote({
+	btn:"4",
+	time:"02.5"
+});
+addMusicNote({
+	btn:"6",
+	time:"02.5"
+});
+
+addMusicNote({
+	btn:"3",
+	time:"02.8"
+});*/
+//alert(musicNote[0].timeStr);
 /* Função para adicionar notas para musica - Fim */
 
 
@@ -390,6 +423,8 @@ function checkNote() {
 audio.addEventListener('timeupdate', checkNote, false);
 
 function goNote(btn, id) {
+	window.setTimeout('stopNote()', 1000);
+	
 	//Cria uma nova nota e a adiciona na div "live_note_area"
 	$( ".live_note_area" ).prepend(
 		$('<div>', {
@@ -404,27 +439,28 @@ function goNote(btn, id) {
 	elementoTop = $(elemento).position().top / $(elemento).parent().height() * 100;
 	elementoLeft = $(elemento).position().left / $(elemento).parent().width() * 100; 
 	distancia = 1.32;
+	//distancia = 1;
 	
 	notaTopFinal = (centroTop + (distancia * (elementoTop - centroTop)));
 	notaLeftFinal = (centroLeft + (distancia * (elementoLeft - centroLeft)));
 	
 	duracao = 1000;
-	
-	window.setTimeout('playNote()', duracao);
-	
-	$(".live_note"+id).animate({
+	duracaoNota = duracao * 1.48;
+	//duracaoNota = 1470;
+	/*alert(Number(notaTopFinal));
+	alert(Number(elementoTop));
+	alert(duracaoNota);
+	stopNote();*/
+	$(".live_note"+id).velocity({
 		opacity: "1",
-	},{queue: false, duration: duracao/4});
+	},{queue: false, duration: duracao/2});
 	
-	$(".live_note"+id).animate({
+	$(".live_note"+id).velocity({
 		top: notaTopFinal+"%",
 		left: notaLeftFinal+"%"
-	},{
-		duration: duracao*distancia,
-		easing: "linear",
-		complete: function(){
-			$(this).remove();
-		}
+	},duracaoNota, function(){
+		//$(this).remove();
+		stopNote();
 	});
 }
 /* Teste de animação 3 - Fim */
@@ -509,10 +545,9 @@ function goNote() {
 /* Teste de Animacao - Fim */
 
 function stopNote(){
-	$(".live_note").stop(false,false);
+	$(".live_note").velocity("stop");
 	audio.pause();
 }
 </script>
-<script src="song/00001/dataSong.js"></script>
 </body>
 </html>
