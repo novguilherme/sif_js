@@ -1,7 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<script src="jquery-1.6.4.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>SIJS</title>
 <style>
@@ -41,6 +40,20 @@ input {
 	background:none;
 	color:#FFF;
 }
+
+/* Score - Start */
+.score {
+	font-size:34px;
+	font-weight:bold;
+	color:#fffbf7;
+	width:100%;
+	text-align:center;
+	top:3%;
+	left:0;
+	text-shadow:0 0 4px #e4d1d0, 0 0 4px #f1d1d5;
+	font-family:Verdana, Arial;
+}
+/* Score - End */
 
 
 /* Live screen - Start */
@@ -159,6 +172,10 @@ input {
 		<source src="sounds/note_good.mp3" type="audio/mpeg">
 	</audio>
 	
+	<!-- Score - Start -->
+	<div class="score">1234567890</div>
+	<!-- Score - End -->
+	
 	<!-- Buttons - Start -->
 	<!-- 1 -->
 	<div class="live_btn" id="live_btn1"></div>
@@ -188,331 +205,8 @@ input {
 	</div>
  </div>
 </div>
-<script>
-
-
-/* Ajustar tela - Inicio */
-function divSize() {
-	$(".tela").removeClass("largura").removeAttr("style");
-	
-	var base = $(".tela").innerWidth();
-	var altura = $(".tela").innerHeight();
-	
-	if(altura > $(window).height()){
-		$(".tela").addClass("largura");
-		var altura = $(window).height();
-		var base = altura / 2 * 3;
-		$(".tela").width(base);
-	}
-}
-
-divSize();
-
-$(window).resize(function() {
-	divSize();
-});
-/*Ajustar Tela - Fim */
-
-/* Efeito sonoro das notas - Inicio */
-sfxNote = document.getElementById('sfxNote');
-function playNote() {
-	sfxNote.pause();
-  sfxNote.currentTime = 0;
-	sfxNote.play();
-}
-/* Efeito Sonoro das notas - Fim */
-
-/*Ativar Botoes - Inicio */
-$(document).keydown(function(e){	
-	if(String.fromCharCode(e.which) == "a" | String.fromCharCode(e.which) == "1") $("#live_btn1").addClass("ativo");//1
-	if(String.fromCharCode(e.which) == "b" | String.fromCharCode(e.which) == "2") $("#live_btn2").addClass("ativo");//2
-	if(String.fromCharCode(e.which) == "c" | String.fromCharCode(e.which) == "3") $("#live_btn3").addClass("ativo");//3
-	if(String.fromCharCode(e.which) == "d" | String.fromCharCode(e.which) == "4") $("#live_btn4").addClass("ativo");//4
-	if(String.fromCharCode(e.which) == "e" | String.fromCharCode(e.which) == "5") $("#live_btn5").addClass("ativo");//5
-	if(String.fromCharCode(e.which) == "f" | String.fromCharCode(e.which) == "6") $("#live_btn6").addClass("ativo");//6
-	if(String.fromCharCode(e.which) == "g" | String.fromCharCode(e.which) == "7") $("#live_btn7").addClass("ativo");//7
-	if(String.fromCharCode(e.which) == "h" | String.fromCharCode(e.which) == "8") $("#live_btn8").addClass("ativo");//8
-	if(String.fromCharCode(e.which) == "i" | String.fromCharCode(e.which) == "9") $("#live_btn9").addClass("ativo");//9
-	
-	if($(".live_note").eq(0).css("backgroundColor") == "rgba(0, 0, 255, 0.5)") {
-		$("body").attr("data-ponto","1");
-	}
-	else if($(".live_note").eq(0).css("backgroundColor") == "rgba(0, 255, 255, 0.5)") {
-		$("body").attr("data-ponto","2");
-	}
-	else {
-		$("body").attr("data-ponto","0");
-	}
-});
-
-$(document).keyup(function(e){
-	//alert(e.which + ": " + String.fromCharCode(e.which));
-	if(String.fromCharCode(e.which) == "a" | String.fromCharCode(e.which) == "1") $("#live_btn1").removeClass("ativo");//1
-	if(String.fromCharCode(e.which) == "b" | String.fromCharCode(e.which) == "2") $("#live_btn2").removeClass("ativo");//2
-	if(String.fromCharCode(e.which) == "c" | String.fromCharCode(e.which) == "3") $("#live_btn3").removeClass("ativo");//3
-	if(String.fromCharCode(e.which) == "d" | String.fromCharCode(e.which) == "4") $("#live_btn4").removeClass("ativo");//4
-	if(String.fromCharCode(e.which) == "e" | String.fromCharCode(e.which) == "5") $("#live_btn5").removeClass("ativo");//5
-	if(String.fromCharCode(e.which) == "f" | String.fromCharCode(e.which) == "6") $("#live_btn6").removeClass("ativo");//6
-	if(String.fromCharCode(e.which) == "g" | String.fromCharCode(e.which) == "7") $("#live_btn7").removeClass("ativo");//7
-	if(String.fromCharCode(e.which) == "h" | String.fromCharCode(e.which) == "8") $("#live_btn8").removeClass("ativo");//8
-	if(String.fromCharCode(e.which) == "i" | String.fromCharCode(e.which) == "9") $("#live_btn9").removeClass("ativo");//9
-});
-/*Ativar Botoes - Fim */
-
-
-/* Ativar Música - Inicio */
-audio = document.getElementById('audio');
-     
-audio.addEventListener('play', play_evento , false);
-audio.addEventListener('pause', pause_evento , false);
-audio.addEventListener('timeupdate', atualizar , false);
-
-function play_evento(){
-	$('#barra_progresso').attr("max", audio.duration);
-	audio.status = "play";
-}
-
-function pause_evento(){
-	audio.status = "pause";
-}
-
-function atualizar(){
-	$('#barra_progresso').attr("value", audio.currentTime);
-	$('.musicTimeStr').attr("value", audio.currentTime);
-	$('.musicTime').attr("value", strToTime(audio.currentTime));
-}
-
-$('#barra_progresso').click(function(e) {
-	if(audio.status == "play") {
-		audio.pause();
-	}
-	
-	else {
-		audio.play();
-	}
-});
-/* Ativar Música - Fim */
-
-/* Converter string do tempo da música em relógio - Inicio */
-function strToTime( str_num ) {
-	var horas   = Math.floor(str_num / 3600);
-	var minutos = Math.floor((str_num - (horas * 3600)) / 60);
-	var segundos = (str_num - (horas * 3600) - (minutos * 60)).toFixed(2);
-	
-	if (horas   < 10)  horas    = "0"+horas;
-	if (minutos < 10)  minutos  = "0"+minutos;
-	if (segundos < 10) segundos = "0"+segundos;
-	
-	var tempo    = horas+':'+minutos+':'+segundos;
-	
-	return tempo;
-}
-/* Converter string do tempo da música em relógio - Fim */
-
-/* Converter tempo de música em string - Inicio */
-function timeToStr( time_num ) {
-	var time_num = time_num.split(':');
-	var totalArrayTempo = time_num.length;
-	var tempo = 0;
-	var multiplicadorTempo = 1;
-	
-	for(posicaoArrayTempo = totalArrayTempo-1; posicaoArrayTempo >= 0; posicaoArrayTempo--) {
-		var tempo = tempo + (Number(time_num[posicaoArrayTempo]) * multiplicadorTempo);
-		multiplicadorTempo = multiplicadorTempo * 60;
-	}
-	
-	return tempo;
-}
-/* Converter tempo de música em string - Fim */
-
-/* Teste notas - Inicio *
-var tstnotas = [];
-
-tstnotas.push({
-	tst: "aaa"
-})
-
-tstnotas.push({
-	tst: "bbb"
-})
-
-alert(tstnotas[0].tst);
-tstnotas.shift(); 
-alert(tstnotas[0].tst);
-/* Teste notas - Fim */
-
-/* Função para adicionar notas para musica - Inicio */
-var musicNote = [];
-function addMusicNote(note) {
-	//Realizar a função apenas se definirem o tempo da música - Inicio
-	if(note.time !== undefined || note.time || note.timeStr !== undefined || note.time) {
-		//Define o tempo em string, caso não tenha definido desta forma
-		if(note.timeStr === undefined || !note.timeStr) note.timeStr = timeToStr(note.time);
-		
-		//Define o mínimo de 1 segundo de música para o timeStr iniciar
-		if(note.timeStr < 1) note.timeStr = 1;
-		
-		//Seleciona botao aleatorio caso não tenha definido nenhum
-		if(parseInt(note.btn,10) <= 0 || parseInt(note.btn,10) > 9 || isNaN(parseInt(note.btn)) ) {
-			note.btn = Math.floor(Math.random() * 9 + 1);
-		}
-		
-		//Guardar dados na variavel "musicNote"
-		musicNote.push({
-			id: musicNote.length,
-			timeStr: note.timeStr,
-			btn: note.btn,
-			start: false
-		})
-	}
-	//Realizar a função apenas se definirem o tempo da música - Fim
-}
-/* Função para adicionar notas para musica - Fim */
-
-
-/* Teste de animação 3 - Inicio */
-function checkNote() {
-	jQuery.each( musicNote, function( i, notaAtual ) {
-		if(notaAtual.start == false) {
-			//verificar se é o tempo definido
-			if(audio.currentTime > notaAtual.timeStr - 1) {
-				notaAtual.start = true;
-				//alert(notaAtual.timeStr);
-				goNote(notaAtual.btn, notaAtual.id);
-			}
-		}
-		
-		if(audio.currentTime >= 2) {
-			//stopNote();
-		}
-	})
-}
-audio.addEventListener('timeupdate', checkNote, false);
-
-function goNote(btn, id) {
-	//Cria uma nova nota e a adiciona na div "live_note_area"
-	$( ".live_note_area" ).prepend(
-		$('<div>', {
-			class: 'live_note live_note'+id
-		})
-	);
-	
-	centroTop = $(".live_note_ref").position().top / $(".live_note_ref").closest(".tela").height() * 100;
-	centroLeft = $(".live_note_ref").position().left / $(".live_note_ref").closest(".tela").width() * 100; 
-	//elemento = "#live_btn"+Math.floor(Math.random() * 9 + 1);
-	elemento = "#live_btn" + btn;
-	elementoTop = $(elemento).position().top / $(elemento).parent().height() * 100;
-	elementoLeft = $(elemento).position().left / $(elemento).parent().width() * 100; 
-	distancia = 1.32;
-	
-	notaTopFinal = (centroTop + (distancia * (elementoTop - centroTop)));
-	notaLeftFinal = (centroLeft + (distancia * (elementoLeft - centroLeft)));
-	
-	duracao = 1000;
-	
-	window.setTimeout('playNote()', duracao);
-	
-	$(".live_note"+id).animate({
-		opacity: "1",
-	},{queue: false, duration: duracao/4});
-	
-	$(".live_note"+id).animate({
-		top: notaTopFinal+"%",
-		left: notaLeftFinal+"%"
-	},{
-		duration: duracao*distancia,
-		easing: "linear",
-		complete: function(){
-			$(this).remove();
-		}
-	});
-}
-/* Teste de animação 3 - Fim */
-
-
-/* Teste de animação 2 - Inicio *
-var notaAtual = 1;
-function goNote() {
-	if(audio.status == "play") {
-		//Cria uma nova nota e a adiciona na div "live_note_area"
-		$( ".live_note_area" ).prepend(
-			$('<div>', {
-				class: 'live_note live_note'+notaAtual
-			})
-		);
-			
-		$(".live_note"+notaAtual).animate({
-			opacity: "1",
-		},{queue: false, duration: 1000});
-		//alert("aaa");
-		centroTop = $(".live_note_ref").position().top / $(".live_note_ref").closest(".tela").height() * 100;
-		centroLeft = $(".live_note_ref").position().left / $(".live_note_ref").closest(".tela").width() * 100; 
-		elemento = "#live_btn"+Math.floor(Math.random() * 9 + 1);
-		//elemento = "#live_btn3";
-		elementoTop = $(elemento).position().top / $(elemento).parent().height() * 100;
-		elementoLeft = $(elemento).position().left / $(elemento).parent().width() * 100; 
-		distancia = 1.32;
-		
-		notaTopFinal = (centroTop + (distancia * (elementoTop - centroTop)))+"%";
-		notaLeftFinal = (centroLeft + (distancia * (elementoLeft - centroLeft)))+"%";
-		
-		$(".live_note"+notaAtual).animate({
-			top: notaTopFinal,
-			left: notaLeftFinal
-		},1800, function(){
-			$(this).remove();
-		});
-		
-		notaAtual++;
-	}
-}
-audio.addEventListener('timeupdate', goNote, false);
-/* Teste de animação 2 - Fim */
-
-//goNote()
-/* Teste de Animacao - Inicio *
-function goNote() {
-	//if(audio.status == "play") {
-		window.setTimeout('$(".live_note").css("backgroundColor","rgba(0,0,255,0.5)")', 925);
-		window.setTimeout('$(".live_note").css("backgroundColor","rgba(0,255,255,0.5)")', 1061);
-		window.setTimeout('$(".live_note").css("backgroundColor","rgba(0,0,255,0.5)")', 1405);
-		//window.setTimeout('stopNote()', 925);
-		//window.setTimeout('stopNote()', 1061);
-		//window.setTimeout('stopNote()', 1405);
-		//window.setTimeout('stopNote()', 1218);
-		
-		$(".live_note").animate({
-			opacity: "1",
-		},{queue: false, duration: 1000});
-		
-		centroTop = $(".live_note").position().top / $(".live_note").parent().height() * 100;
-		centroLeft = $(".live_note").position().left / $(".live_note").parent().width() * 100; 
-		elemento = "#live_btn"+Math.floor(Math.random() * 9 + 1);
-		//elemento = "#live_btn4";
-		elementoTop = $(elemento).position().top / $(elemento).parent().height() * 100;
-		elementoLeft = $(elemento).position().left / $(elemento).parent().width() * 100; 
-		distancia = 1.32;
-		
-		notaTopFinal = (centroTop + (distancia * (elementoTop - centroTop)))+"%";
-		notaLeftFinal = (centroLeft + (distancia * (elementoLeft - centroLeft)))+"%";
-		
-		$(".live_note").animate({
-			top: notaTopFinal,
-			left: notaLeftFinal
-		},1800, function(){
-			$(".live_note").removeAttr("style");
-			goNote();
-		});
-	//}
-}
-
-/* Teste de Animacao - Fim */
-
-function stopNote(){
-	$(".live_note").stop(false,false);
-	audio.pause();
-}
-</script>
+<script src="js/jquery-1.6.4.js"></script>
+<script src="js/js_sif-engine.js"></script>
 <script src="song/00001/dataSong.js"></script>
 </body>
 </html>
